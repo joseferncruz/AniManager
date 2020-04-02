@@ -1,0 +1,8 @@
+# Ignore cached files from python
+src/__pycache__
+
+# Ignore cached files from jupyter notebooks
+notebooks/
+
+# Others
+*desktop.ini
