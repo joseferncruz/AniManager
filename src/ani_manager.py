@@ -15,34 +15,12 @@ import os
 import time
 import sys
 
-##############################################################################
-
-
-def load_source_code_library(src_directory_path):
-    """Load source code library."""
-    if src_directory_path.endswith('src'):
-        if True in [element.endswith('src') for element in sys.path]:
-            print('Source code library is already loaded.')
-        else:
-            print('Source code library not found.\
-                  \nAppending src_directory_path...')
-            try:
-                sys.path.append(src_directory_path)
-                print('Source code library is loaded.')
-            except 'LibraryNotFound':
-                print('Error with given source code library pathway')
-                src_directory_path = input('Insert a valid path \
-                                           for the source code library: ')
-    else:
-        print('Error with pathway provided. Source folder not found.\
-              Verify the folder and try again.')
-
 
 ##############################################################################
 def create_new_animal_record(
     animal_list=[],
     project=None,
-    PI=None,
+    principal_investigator=None,
     user=None,
     species=None,
     strain=None,
@@ -50,26 +28,26 @@ def create_new_animal_record(
     sex=None,
     date_of_birth=None,
     date_of_arrival=None,
-    location_id=None
+    location_id=None,
 ):
-    """Create a new animal record.
+    """Create a new animal record as a DataFrame.
 
-    Parameters
-    ----------
-    arg_1 : str
-        <description>
-    arg_2 : bool, optional
-        <description>
+    Description
 
-    Returns
-    -------
-    dataframe
-        dataframe with all animals and respective information in a panel
+    Args:
+        arg_1: description
+        arg_2: description
+
+    Returns:
+        A pandas DataFrame with the information provided as arguments. If no
+        information is provided, it it returns an empty DataFrame with the
+        column names.
+
     """
-    column_labels = ["project", "pi", "user",
-                     "species", "strain", "animal_id",
+    column_labels = ["project", "pi", "user", "species", "strain", "animal_id",
                      "sex", "date_of_birth", "date_of_arrival",
-                     "age_at_arrival_weeks", "location_id", "date_of_sacrifice",
+                     "age_at_arrival_weeks", "location_id",
+                     "date_of_sacrifice",
                      ]
     # Create the shape of the dataframe.
     animal_record = pd.DataFrame(index=np.arange(len(animal_list)),
@@ -81,15 +59,15 @@ def create_new_animal_record(
     for animal in range(len(animal_list_sorted)):
         animal_record.iloc[animal, 5] = animal_list_sorted[animal]
         animal_record["project"] = project
-        animal_record["pi"] = PI.lower()
-        animal_record["user"] = user.lower()
-        animal_record["species"] = species.lower()
-        animal_record["strain"] = strain.lower()
+        animal_record["pi"] = principal_investigator
+        animal_record["user"] = user
+        animal_record["species"] = species
+        animal_record["strain"] = strain
         animal_record["age_at_arrival_weeks"] = age_at_arrival_weeks
-        animal_record["sex"] = sex.lower()
+        animal_record["sex"] = sex
         animal_record["date_of_birth"] = date_of_birth
         animal_record["date_of_arrival"] = date_of_arrival
-        animal_record["location_id"] = location_id.lower()
+        animal_record["location_id"] = location_id
         animal_record["date_of_sacrifice"] = np.nan
 
     return animal_record
@@ -138,7 +116,8 @@ def merge_main_record(
 def save_new_animal_record(
     animal_record,
     save_dir,
-    save_csv=True,
+    is_new_main_record=False,
+    save_csv=False,
     save_excel=False,
 ):
     """Save animal record.
@@ -161,12 +140,34 @@ def save_new_animal_record(
 
 
     """
+    if is_new_main_record:
+        print('This is a new main record.')
+        main_record_dir = os.path.join(save_dir, 'main_record')
+        if not os.path.isdir(main_record_dir):
+            print(f'Main record directory not found. \
+                  Creating directory main_record at \n {main_record_dir}')
+            os.mkdir(main_record_dir)
+        save_csv_path = os.path.join(main_record_dir,
+                                     'main_record_{}.csv'.format(
+                                             time.strftime("%Y%m%d_%H%M%S")
+                                             )
+                                     )
+        animal_record.to_csv(save_csv_path)
+        print(f'main record stored at \n{save_csv_path}')
+
+    save_dir = os.path.join(save_dir, 'individual_updates')
+    if not os.path.isdir(save_dir):
+        os.mkdir(save_dir)
+        print(f'Directory not found. Creating directory individual_updates at \
+               \n {save_dir}')
+
     if save_csv:
         save_csv_path = os.path.join(save_dir,
                                      'new_import_{}.csv'.format(
                                          time.strftime("%Y%m%d_%H%M%S")
                                          )
                                      )
+
         animal_record.to_csv(save_csv_path)
         print(f'File saved at: \n{save_csv_path}.')
 
@@ -246,6 +247,7 @@ def fetch_from_main_record(
         record_to_return.to_excel(os.path.join(output_path, file_name))
         # Print success message
         message = f'Dataframe saved at: {os.path.join(output_path, file_name)}'
+        print(message)
 
     return record_to_return
 
@@ -299,3 +301,26 @@ def save_main_record(
         saving_path = os.path.join(main_record_dir, file_name)
         main_record.to_csv(saving_path)
         print(f'File saved at {saving_path}')
+
+# LEGACY CODE # IGNORE
+##############################################################################
+
+
+def load_source_code_library(src_directory_path):
+    """Load source code library."""
+    if src_directory_path.endswith('src'):
+        if True in [element.endswith('src') for element in sys.path]:
+            print('Source code library is already loaded.')
+        else:
+            print('Source code library not found.\
+                  \nAppending src_directory_path...')
+            try:
+                sys.path.append(src_directory_path)
+                print('Source code library is loaded.')
+            except 'LibraryNotFound':
+                print('Error with given source code library pathway')
+                src_directory_path = input('Insert a valid path \
+                                           for the source code library: ')
+    else:
+        print('Error with pathway provided. Source folder not found.\
+              Verify the folder and try again.')
