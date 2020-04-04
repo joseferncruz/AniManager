@@ -2,7 +2,7 @@
 src/__pycache__
 
 # Ignore cached files from jupyter notebooks
-notebooks/
+notebooks/.ipynb_checkpoints/*
 
 # Others
 *desktop.ini

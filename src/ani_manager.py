@@ -18,57 +18,48 @@ import sys
 
 ##############################################################################
 def create_new_animal_record(
-    animal_list=[],
-    project=None,
-    principal_investigator=None,
-    user=None,
-    species=None,
-    strain=None,
-    age_at_arrival_weeks=None,
-    sex=None,
-    date_of_birth=None,
-    date_of_arrival=None,
-    location_id=None,
+    import_info
 ):
     """Create a new animal record as a DataFrame.
 
-    Description
-
     Args:
-        arg_1: description
-        arg_2: description
+    ----
+        import_info : dict
+            Python dict with complete information about animal batch.
 
-    Returns:
-        A pandas DataFrame with the information provided as arguments. If no
-        information is provided, it it returns an empty DataFrame with the
+    Returns
+    -------
+        A pandas DataFrame with the information provided as arguments. If
+        animal_list is empty, it it returns an empty DataFrame with the
         column names.
 
     """
-    column_labels = ["project", "pi", "user", "species", "strain", "animal_id",
-                     "sex", "date_of_birth", "date_of_arrival",
-                     "age_at_arrival_weeks", "location_id",
-                     "date_of_sacrifice",
-                     ]
+    column_labels = [
+
+        'project', 'pi', 'user', 'species', 'strain', 'animal_id',
+        'sex', 'date_of_birth', 'date_of_arrival',
+        'age_at_arrival_weeks', 'location_id', 'date_of_sacrifice',
+    ]
     # Create the shape of the dataframe.
-    animal_record = pd.DataFrame(index=np.arange(len(animal_list)),
+    animal_record = pd.DataFrame(index=np.arange(len(import_info.get('animal_list'))),
                                  columns=column_labels,
                                  )
-    animal_list_sorted = sorted(animal_list)
+    animal_list_sorted = sorted(import_info.get('animal_list'))
 
     # Loop through every animal in the list and add it to the dataframe.
     for animal in range(len(animal_list_sorted)):
         animal_record.iloc[animal, 5] = animal_list_sorted[animal]
-        animal_record["project"] = project
-        animal_record["pi"] = principal_investigator
-        animal_record["user"] = user
-        animal_record["species"] = species
-        animal_record["strain"] = strain
-        animal_record["age_at_arrival_weeks"] = age_at_arrival_weeks
-        animal_record["sex"] = sex
-        animal_record["date_of_birth"] = date_of_birth
-        animal_record["date_of_arrival"] = date_of_arrival
-        animal_record["location_id"] = location_id
-        animal_record["date_of_sacrifice"] = np.nan
+        animal_record['project'] = import_info.get('project')
+        animal_record['pi'] = import_info.get('principal_investigator')
+        animal_record['user'] = import_info.get('user')
+        animal_record['species'] = import_info.get('species')
+        animal_record['strain'] = import_info.get('strain')
+        animal_record['age_at_arrival_weeks'] = import_info.get('age_at_arrival_weeks')
+        animal_record['sex'] = import_info.get('sex')
+        animal_record['date_of_birth'] = import_info.get('date_of_birth')
+        animal_record['date_of_arrival'] = import_info.get('date_of_arrival')
+        animal_record['location_id'] = import_info.get('location_id')
+        animal_record['date_of_sacrifice'] = np.nan
 
     return animal_record
 
@@ -81,22 +72,26 @@ def merge_main_record(
     output_dir,
     save_output=False,
 ):
-    """Update an existing animal record.
+    """Merge a new import with the main record.
 
-    Parameters
-    ----------
+    Args:
+    -----
     new_animal_record : dataframe
         <description>
 
     animal_record_to_update : dataframe
         <description>
 
-    save_path : str, optional
+    output_dir : str
+        Absolute path to the main_record.csv file.
+
+    save_output : bool, optional
+        Saves the dataframe at the output_dir.
 
     Returns
     -------
-    dataframe
-        dataframe with all animals and respective information in a panel
+    merged_records : dataframe
+        Dataframe with all animals and respective information in a panel
     """
     # Merge records.
     merged_records = pd.concat([animal_record_to_update,
