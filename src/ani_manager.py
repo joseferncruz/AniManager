@@ -1,19 +1,20 @@
+
 """
-################################################################################
-Ani Manager - quickfix to manage animals in the lab
-################################################################################
+###############################################################################
+Ani Manager - quickfix for managing animals in the lab
+###############################################################################
 """
+
 __author__ = 'Jose Oliveira da Cruz'
 __email__ = 'jose.cruz@nyu.edu'
 __version__ = '0.3.0'
-################################################################################
+###############################################################################
 
 # Import modules
 import pandas as pd
 import numpy as np
 import os
 import time
-import sys
 
 
 ##############################################################################
@@ -22,16 +23,16 @@ def create_new_animal_record(
 ):
     """Create a new animal record as a DataFrame.
 
-    Args:
-    ----
-        import_info : dict
-            Python dict with complete information about animal batch.
+    Parameters
+    ----------
+    import_info : dict
+        Information used to generate a DataFrame.
 
     Returns
     -------
-        A pandas DataFrame with the information provided as arguments. If
-        animal_list is empty, it it returns an empty DataFrame with the
-        column names.
+    DataFrame.
+        If the animal_list is empty, it it returns
+        an empty DataFrame with the column names.
 
     """
     column_labels = [
@@ -44,6 +45,7 @@ def create_new_animal_record(
     animal_record = pd.DataFrame(index=np.arange(len(import_info.get('animal_list'))),
                                  columns=column_labels,
                                  )
+    # Sort the animal_id_list
     animal_list_sorted = sorted(import_info.get('animal_list'))
 
     # Loop through every animal in the list and add it to the dataframe.
@@ -66,7 +68,7 @@ def create_new_animal_record(
 ##############################################################################
 
 
-def merge_main_record(
+def merge_with_main_record(
     new_animal_record,
     animal_record_to_update,
     output_dir,
@@ -74,19 +76,19 @@ def merge_main_record(
 ):
     """Merge a new import with the main record.
 
-    Args:
-    -----
-    new_animal_record : dataframe
-        <description>
+    Parameters
+    ----------
+    new_animal_record : DataFrame
+        Dataframe to merge with the main record.
 
     animal_record_to_update : dataframe
-        <description>
+        Main record Dataframe to be updated.
 
     output_dir : str
-        Absolute path to the main_record.csv file.
+        Absolute path to the main_record directory.
 
     save_output : bool, optional
-        Saves the dataframe at the output_dir.
+        Saves the DataFrame at the output_dir.
 
     Returns
     -------
@@ -98,6 +100,7 @@ def merge_main_record(
                                 new_animal_record])
     # Save file.
     if save_output:
+        # Attribute a specific timestamp.
         file_name = 'main_record_{}.csv'.format(time.strftime('%Y%m%d_%H%M%S'))
         saving_path = os.path.join(output_dir, file_name)
         merged_records.to_csv(saving_path)
@@ -115,7 +118,7 @@ def save_new_animal_record(
     save_csv=False,
     save_excel=False,
 ):
-    """Save animal record.
+    """Save a .csv or .xls file with the a new record at a specific location.
 
     Parameters
     ----------
@@ -125,16 +128,19 @@ def save_new_animal_record(
     save_dir : str
         Filepath where the file is intended to be stored.
 
+    is_new_main_record : bool, optional
+        If True it creates a new directory main_record and stores a copy
+        of the new import at that location.
+
     save_csv: bool, optional
-        Save file as .csv
+        Save file as .csv at the save_dir directory.
 
     save_excel: bool, optional
-        Save file as .xls
-
-
-
+        Save file as .xls at the save_dir directory.
 
     """
+    # If this is the first import, create the main_import dir and save a copy
+    # of the import at that location.
     if is_new_main_record:
         print('This is a new main record.')
         main_record_dir = os.path.join(save_dir, 'main_record')
@@ -150,8 +156,9 @@ def save_new_animal_record(
         animal_record.to_csv(save_csv_path)
         print(f'main record stored at \n{save_csv_path}')
 
+    # Create a new individual_updates directory if there is none.
     save_dir = os.path.join(save_dir, 'individual_updates')
-    if not os.path.isdir(save_dir):
+    if not os.path.isdir(save_dir):  # If directory is not found, create it.
         os.mkdir(save_dir)
         print(f'Directory not found. Creating directory individual_updates at \
                \n {save_dir}')
@@ -181,20 +188,19 @@ def save_new_animal_record(
 def get_main_record(
     main_record_dir,
 ):
-    """Get the latest main record from folder.
+    """Get the latest main record from the main_record directory.
 
     Parameters
     ----------
-    arg : dataframe
-        <description>
-
-
-    save_path : str, optional
+    main_record_dir : str
+        Absolute path to the main_record directory.
 
     Returns
     -------
-
-
+    main_record_filepath : str
+        Absolute path to the latest main_record file found at the directory.
+    main_record : DataFrame
+        DataFrame with the latest main_record file content.
     """
     # Check directory
     latest_main_record = os.listdir(main_record_dir)[-1]
@@ -228,7 +234,30 @@ def fetch_from_main_record(
     experiment_number='',
     output_path=None,
 ):
-    """DOC String."""
+    """Fetch information from the main_record.
+
+    Parameters
+    ----------
+    animal_id_list : list of int
+        List with the specific animal identifiers as integers.
+
+    main_record : DataFrame
+        Dataframe with the main record to fetch information.
+
+    user : str, optional
+        Used to label the output file.
+
+    experiment_number : str, optional
+        Used to label the output file.
+
+    output_path : str, optional
+        The Absolute path to the directory where the file is to be stored.
+
+    Returns
+    -------
+    record_to_return : DataFrame
+        Dataframe with the fetched information.
+    """
     # Get the dataframe
     record_to_return = main_record[main_record['animal_id'].isin(animal_id_list
                                                                  )
@@ -255,7 +284,27 @@ def update_main_record(
     column_to_update,
     value_to_add,
 ):
-    """Update an animal record."""
+    """Update an animal record.
+
+    Parameters
+    ----------
+    animal_record : DataFrame
+        DataFrame with the latest animal record.
+
+    animal_id_list : list
+        List with the specific animal_id numbers to modify.
+
+    column_to_update : str
+        Name of the column to update.
+
+    value_to_add : str
+        Value to be added to the DataFrame.
+
+    Returns
+    -------
+    animal_record : DataFrame
+        Updated animal record.
+    """
     assert isinstance(animal_id_list, list), \
         'animal_id_list must be a list of integers'
     assert isinstance(value_to_add, (str, int, float)), \
@@ -264,7 +313,7 @@ def update_main_record(
     # Create a copy of the dataframe
     animal_record = animal_record.copy()
 
-    # extract row indexer used to subset the data
+    # Extract row indexer used to subset the data
     row_indexer = animal_record['animal_id'].isin(animal_id_list)
 
     # Replace the value at the column of interest
@@ -281,9 +330,23 @@ def save_main_record(
     main_record_dir,
     base_name=None,
 ):
-    """To be completed."""
+    """Save main record at a specific location.
+
+    Parameters
+    ----------
+    main_record : DataFrame
+        DataFrame to be saved at the main_record_dir directory.
+
+    main_record_dir : str
+        Absolute path to the directory containing the main_record.
+
+    base_name : str, optional
+        Saves the main_record with a new basename. This file won't be used as
+        a main record because it has a new base name.'
+
+    """
     assert isinstance(base_name, (str, object)), \
-        'base_name must finish with .csv extension'
+        'base_name must be a string finishing with .csv extension'
 
     if base_name is None:
         file_name = 'main_record_{}.csv'.format(time.strftime('%Y%m%d_%H%M%S'))
@@ -297,25 +360,4 @@ def save_main_record(
         main_record.to_csv(saving_path)
         print(f'File saved at {saving_path}')
 
-# LEGACY CODE # IGNORE
-##############################################################################
-
-
-def load_source_code_library(src_directory_path):
-    """Load source code library."""
-    if src_directory_path.endswith('src'):
-        if True in [element.endswith('src') for element in sys.path]:
-            print('Source code library is already loaded.')
-        else:
-            print('Source code library not found.\
-                  \nAppending src_directory_path...')
-            try:
-                sys.path.append(src_directory_path)
-                print('Source code library is loaded.')
-            except 'LibraryNotFound':
-                print('Error with given source code library pathway')
-                src_directory_path = input('Insert a valid path \
-                                           for the source code library: ')
-    else:
-        print('Error with pathway provided. Source folder not found.\
-              Verify the folder and try again.')
+###############################################################################
