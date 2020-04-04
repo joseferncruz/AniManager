@@ -7,7 +7,7 @@ Ani Manager - quickfix for managing animals in the lab
 
 __author__ = 'Jose Oliveira da Cruz'
 __email__ = 'jose.cruz@nyu.edu'
-__version__ = '0.3.0'
+__version__ = '0.1.0'
 ###############################################################################
 
 # Import modules
