@@ -4,6 +4,7 @@
 ## Table of contents
 * [General info](#general-info)
 * [Installation](#Installation)
+-- [Installation using pip](#installation-using-pip)
 * [Web Browser Compatibility](#web-browser-compatibility)
 * [Python](#python-resources)
 
@@ -28,6 +29,12 @@ This project is written in python and has the following dependencies:
 3. Launch Anaconda Navigator and then Jupyter Notebook. Then, go to the directory that was download in step 2.
 
 4. Launch the `example_manage_animal_records.ipynb` file that is in the directory `notebooks`. New to jupyter notebooks? No problem. You can have a look at the (vast) online tutorias, for example: [Jupyter Notebook for Beginners: A Tutorial](https://www.dataquest.io/blog/jupyter-notebook-tutorial/).
+
+### -- Installation using pip
+1. Open the Anaconda Command Line and type: `pip install <package>`
+
+
+
 
 ## Web Browser Compatibility
 
