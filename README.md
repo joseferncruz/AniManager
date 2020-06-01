@@ -31,10 +31,11 @@ This project is written in python and has the following dependencies:
 4. Launch the `example_manage_animal_records.ipynb` file that is in the directory `notebooks`. New to jupyter notebooks? No problem. You can have a look at the (vast) online tutorias, for example: [Jupyter Notebook for Beginners: A Tutorial](https://www.dataquest.io/blog/jupyter-notebook-tutorial/).
 
 ### -- Installation using pip
-1. Open the Anaconda Command Line and type: `pip install <package>`
+1. Open the Anaconda Command Line and type: `pip install git+https://github.com/joseferncruz/AniManager.git`
 
+**to upgrade** 
 
-
+`pip install git+https://github.com/joseferncruz/AniManager.git --upgrade`
 
 ## Web Browser Compatibility
 
