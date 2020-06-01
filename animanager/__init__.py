@@ -1,1 +1,1 @@
-from AniManager.ani_manager import * 
+from animanager.ani_manager import * 
