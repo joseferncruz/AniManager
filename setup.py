@@ -12,7 +12,7 @@ requirements = [
 
 if __name__ == "__main__":
     setup(
-        name='AniManager',
+        name='animanager',
         version='0.1.0',
         description='quick fix for managing animals in the lab.',
         long_description=long_description,
